@@ -5,7 +5,7 @@ layout: default
 section_title: Getting Started
 ---
 
-The first toward developing a custom integration (Procore Clients) or App Markeplace application (Technology Partners) is to register a new Developer Account on the Procore Developer Portal.
+The first step toward developing a custom integration (Procore Clients) or App Markeplace application (Technology Partners) is to register a new Developer Account on the Procore Developer Portal.
 Here are the steps to properly navigate the Developer Portal and successfully register for a new Developer Account.
 
 1. First, open your browser and navigate to the [Developer Portal](https://developers.procore.com/) landing page.
