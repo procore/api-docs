@@ -42,7 +42,7 @@ As you work toward publishing your application on the Marketplace, you will step
 
 Review the following topics for additional information:
 
-- [Marketplace Requirements]({{ site.url }}{{ site.baseurl }}{% link overview/partner_content_reqs.md %})
+- [Marketplace Listing Requirements]({{ site.url }}{{ site.baseurl }}{% link marketplace_listing/marketplace_listing_reqs.md %})
 - [Technical Requirements]({{ site.url }}{{ site.baseurl }}{% link overview/partner_tech_reqs.md %})
 - [Sales and Support Requirements]({{ site.url }}{{ site.baseurl }}{% link overview/partner_support_content_reqs.md %})
 

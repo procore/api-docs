@@ -79,8 +79,6 @@
       url: /building-apps-promote-manifest
     - title: Submitting a Production App Manifest for Review
       url: /building-apps-review-manifest
-    - title: Creating a Marketplace Listing and Submitting for Review
-      url: /building-apps-submit-marketplace
     - title: Managing App Collaboration
       url: /building-apps-manage-collabs
     - title: Working with App Metrics
@@ -95,6 +93,11 @@
       url: /building-apps-legacy-v3x-manifest-format
     - title: Migrating an App Manifest from v3.x to v4.1
       url: /building-apps-v3x-v41-manifest-migration
+
+- title: Marketplace Listing
+  items:
+    - title: Marketplace Listing Requirements
+      url: /marketplace-listing-reqs
 
 - title: API Essentials
   items:
