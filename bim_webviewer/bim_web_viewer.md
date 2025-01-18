@@ -2740,17 +2740,20 @@ Model
 
 ---
 
-### Get Global Offset
+<!-- This is to keep links to the old method name working. -->
+<div id="get-global-offset"></div>
 
-<p class="heading-link-container"><a class="heading-link" href="#get-global-offset"></a></p>
+### Get Global Offset (Do Not Use)
+
+<p class="heading-link-container"><a class="heading-link" href="#get-global-offset-do-not-use"></a></p>
 
 ```js
-getGlobalOffset();
+getGlobalOffsetDoNotUse();
 ```
 
 #### Description
 
-Retrieves the global offset, if there is one.
+Retrieves the global offset, if there is one. See [migrating to world coordinates](#migrating-to-world-coordinates) for details on avoiding using this method.
 
 #### Parameters
 
@@ -2759,7 +2762,7 @@ None
 ##### Returns
 
 ```js
-{offsetX: Number, offsetY: Number, offsetZ: Number}
+{x: Number, y: Number, z: Number}
 ```
 
 ##### Namespace
@@ -5395,6 +5398,28 @@ console.log(feetInches); // => "ftin"
   <a class="heading-link" href="#migration-guides"></a>
 </p>
 
+### v16 to v17
+
+<p class="heading-link-container">
+  <a class="heading-link" href="#v16-to-v17"></a>
+</p>
+
+#### Change `models.getGlobalOffset` to `models.getGlobalOffsetDoNotUse`
+
+[`models.getGlobalOffset`](#get-global-offset) has been renamed to [`models.getGlobalOffsetDoNotUse`](#get-global-offset-do-not-use) and its return type has been modified:
+
+```ts
+// v16
+await models.getGlobalOffset()
+// => { offsetX: 0.1, offsetY: 0.2, offsetZ: 0.3 }
+
+// v17
+await models.getGlobalOffsetDoNotUse()
+// => { x: 0.1, y: 0.2, z: 0.3 }
+```
+
+See [migrating to world coordinates](#migrating-to-world-coordinates) for context and on how to avoid needing this method.
+
 ### v15 to v16
 
 <p class="heading-link-container">
@@ -5862,13 +5887,17 @@ I have the privilege of writing this migration guide from the future and can tel
 
 #### Context
 
-Historically, many methods and events returned and/or expected to receive coordinates that were not consistent with the model coordinates from the source file. To get the correct coordinates you would need to add/subtract the result of `model.getGlobalOffset` to them. This would affect models that are significantly offset from the origin, which we refer to as being in "world coordinates".
+Historically, many methods and events returned and/or expected to receive coordinates that were not consistent with the model coordinates from the source file. To get the correct coordinates you would need to add/subtract the result of `model.getGlobalOffsetDoNotUse` to them. This would affect models that are significantly offset from the origin, which we refer to as being in "world coordinates".
 
 We have since taken the stance that all coordinates returned or required as parameters to the Web Viewer should be consistent with the model coordinates from the source file. However, we will be updating them as we come across them so they may be shipped across multiple breaking changes.
 
+#### Note for Versions Before v17
+
+Prior to v17, `model.getGlobalOffsetDoNotUse` was called `model.getGlobalOffset` and had a different return type. See [v16 to v17 migration guide](#v16-to-v17) for more details.
+
 #### Migration Guide
 
-If you were saving data returned from a method or event payload that has changed, that data may now be inconsistent if there is a global offset (i.e. if `model.getGlobalOffset` is a non-zero vector) for that model. This can result in behavior where setting the camera position with `setPosition` may be very far away from the actual model. To migrate the old data you would need to translate by the `model.getGlobalOffset` to be in the correct coordinate system.
+If you were saving data returned from a method or event payload that has changed, that data may now be inconsistent if there is a global offset (i.e. if `model.getGlobalOffsetDoNotUse` is a non-zero vector) for that model. This can result in behavior where setting the camera position with `setPosition` may be very far away from the actual model. To migrate the old data you would need to translate by the `model.getGlobalOffsetDoNotUse` to be in the correct coordinate system.
 
 For example, say you were on an old version of the Web Viewer in which `camera.getPosition/setPosition` did not operate on "world coordinates" and you were saving the camera positions with the following:
 
@@ -5888,25 +5917,25 @@ viewer.camera.setPosition(x, y, z);
 
 But then a new version of the Web Viewer is released that updates `camera.getPosition/setPosition` to be in "world coordinates". The values you have saved in your DB will now be incorrect when you pass them to `setPosition`.
 
-To fix this issue you would need to add the global offset (`model.getGlobalOffset`) to the position before calling `setPosition`:
+To fix this issue you would need to add the global offset (`model.getGlobalOffsetDoNotUse`) to the position before calling `setPosition`:
 
 ```ts
 const { x, y, z } = await getCameraPositionFromServer();
-const { offsetX, offsetY, offsetZ } = await viewer.model.getGlobalOffset();
+const offset = await viewer.model.getGlobalOffsetDoNotUse();
 
-viewer.camera.setPosition(x + offsetX, y + offsetY, z + offsetZ);
+viewer.camera.setPosition(x + offset.x, y + offset.y, z + offset.z);
 ```
 
 Saving to the DB would also need to be updated to keep your DB values in a consistent coordinate system:
 
 ```ts
 const { x, y, z } = await viewer.camera.getPosition();
-const { offsetX, offsetY, offsetZ } = await viewer.model.getGlobalOffset();
+const offset = await viewer.model.getGlobalOffsetDoNotUse();
 
 postCameraPositionToServer({
-  x: x - offsetX,
-  y: y - offsetY,
-  z: z - offsetZ
+  x: x - offset.x,
+  y: y - offset.y,
+  z: z - offset
 });
 ```
 
